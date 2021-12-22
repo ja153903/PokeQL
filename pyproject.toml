@@ -13,6 +13,9 @@ websockets = "^10.1"
 requests = "^2.26.0"
 
 [tool.poetry.dev-dependencies]
+black = "^21.12b0"
+pre-commit = "^2.16.0"
+pylint = "^2.12.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
