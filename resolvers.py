@@ -2,7 +2,14 @@ import typing
 
 from datasource import PokemonDataSource
 
-from strawberry_types import Berry, BerryFlavor, BerryFlavorMap, Pokemon
+from strawberry_types import (
+    Berry,
+    BerryFlavor,
+    BerryFlavorMap,
+    Pokemon,
+    PokemonAbility,
+    Ability,
+)
 
 
 def format_berry_flavor(
@@ -57,6 +64,27 @@ async def get_berry_by_name(name: str) -> typing.Optional[Berry]:
     )
 
 
+def format_pokemon_abilities(
+    abilities: typing.List[typing.Dict[str, typing.Any]]
+) -> typing.List[PokemonAbility]:
+    pokemon_abilities = []
+
+    for ability_dict in abilities:
+        is_hidden = ability_dict.get("is_hidden")
+        ability = ability_dict.get("ability")
+
+        ability_id = ability.get("id")
+        ability_name = ability.get("name")
+
+        ability_type = Ability(name=ability_name, id=ability_id)
+
+        pokemon_ability = PokemonAbility(is_hidden=is_hidden, ability=ability_type)
+
+        pokemon_abilities.append(pokemon_ability)
+
+    return pokemon_abilities
+
+
 async def get_pokemon_by_name(name: str) -> typing.Optional[Pokemon]:
     """
     get_pokemon_by_name creates a Pokemon object for querying based on
@@ -69,6 +97,10 @@ async def get_pokemon_by_name(name: str) -> typing.Optional[Pokemon]:
     if not data:
         return None
 
+    abilities = data.get("abilities")
+    if abilities:
+        abilities = format_pokemon_abilities(abilities)
+
     return Pokemon(
         id=data.get("id"),
         name=data.get("name"),
@@ -76,4 +108,5 @@ async def get_pokemon_by_name(name: str) -> typing.Optional[Pokemon]:
         height=data.get("height"),
         order=data.get("order"),
         weight=data.get("weight"),
+        abilities=abilities,
     )

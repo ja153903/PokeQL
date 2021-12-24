@@ -27,6 +27,18 @@ class Berry:
 
 
 @strawberry.type
+class Ability:
+    id: strawberry.ID
+    name: str
+
+
+@strawberry.type
+class PokemonAbility:
+    is_hidden: bool
+    ability: Ability
+
+
+@strawberry.type
 class Pokemon:
     id: strawberry.ID
     name: str
@@ -34,3 +46,4 @@ class Pokemon:
     height: int
     order: int
     weight: int
+    abilities: typing.List[PokemonAbility]
